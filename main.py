@@ -3,7 +3,7 @@ import logging
 from pprint import pprint
 
 import requests
-import terminaltables
+from terminaltables import AsciiTable
 from dotenv import load_dotenv
 
 
@@ -32,7 +32,6 @@ def fetch_vacancies_page_hh(language, page, area_id, period):
     response = requests.get(hh_vacancies_url, params=params)
     response.raise_for_status()
     vacancies = response.json()
-    pprint(vacancies, sort_dicts=False)
     return vacancies
 
 
@@ -55,7 +54,6 @@ def fetch_vacancies_by_language(language, area_id=113, period=None):
         vacancies.append(fetch_vacancies_page_hh(language, page, area_id,
                                                  period))
         page += 1
-    pprint(vacancies, sort_dicts=False)
     return vacancies
 
 
@@ -172,7 +170,6 @@ def fetch_vacancies_page_sj(api_key, lang, town=4, page=0):
     response = requests.get(url, headers=headers, params=params)
     response.raise_for_status()
     vacancies_page = response.json()
-    pprint(vacancies_page, sort_dicts=False)
     return vacancies_page
 
 
@@ -196,7 +193,6 @@ def fetch_vacancies_by_language_sj(api_key, language, area_id=4):
             break
         page += 1
 
-    pprint(vacancies_by_lang, sort_dicts=False)
     return vacancies_by_lang
 
 
@@ -261,6 +257,31 @@ def fetch_langs_info_sj(api_key, area_id):
     return languages_info
 
 
+def print_table_of_avg_salaries_sj(languages_info):
+    title = 'SuperJob Moscow'
+    data = []
+    data.append(
+        [
+         "Язык программирования",
+         "Вакансий найдено",
+         "Вакансий обработано",
+         "Средняя зарплата"
+        ]
+    )
+
+    for language, info in languages_info.items():
+        data.append(
+            [
+                language,
+                info['vacancies_found'],
+                info['vacancies_processed'],
+                info['average_salary']
+            ]
+        )
+    table = AsciiTable(data, title)
+    print(table.table)
+
+
 def main():
     load_dotenv()
     # hh_moscow_id = os.getenv('MOSCOW_CITY_ID')
@@ -268,9 +289,10 @@ def main():
 
     superjob_api_key = os.getenv('SUPERJOB_API_KEY')
     sj_moscow_id = os.getenv('SJ_MOSCOW_CITY_ID')
-    pprint(fetch_langs_info_sj(superjob_api_key, sj_moscow_id),
-           sort_dicts=False)
 
+    print_table_of_avg_salaries_sj(
+        fetch_langs_info_sj(superjob_api_key, sj_moscow_id)
+    )
 
 if __name__ == "__main__":
     main()
