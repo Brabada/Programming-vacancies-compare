@@ -257,15 +257,14 @@ def fetch_langs_info_sj(api_key, area_id):
     return languages_info
 
 
-def print_table_of_avg_salaries_sj(languages_info):
-    title = 'SuperJob Moscow'
+def print_ascii_table(title, languages_info):
     data = []
     data.append(
         [
-         "Язык программирования",
-         "Вакансий найдено",
-         "Вакансий обработано",
-         "Средняя зарплата"
+            "Язык программирования",
+            "Вакансий найдено",
+            "Вакансий обработано",
+            "Средняя зарплата"
         ]
     )
 
@@ -281,15 +280,23 @@ def print_table_of_avg_salaries_sj(languages_info):
     table = AsciiTable(data, title)
     print(table.table)
 
+def print_table_of_avg_salaries_hh(languages_info):
+    title = 'HeadHunter Moscow'
+    print_ascii_table(title, languages_info)
+
+
+def print_table_of_avg_salaries_sj(languages_info):
+    title = 'SuperJob Moscow'
+    print_ascii_table(title, languages_info)
+
 
 def main():
     load_dotenv()
-    # hh_moscow_id = os.getenv('MOSCOW_CITY_ID')
-    # pprint(fetch_langs_info_hh(hh_moscow_id, 30), sort_dicts=False)
-
+    hh_moscow_id = os.getenv('MOSCOW_CITY_ID')
     superjob_api_key = os.getenv('SUPERJOB_API_KEY')
     sj_moscow_id = os.getenv('SJ_MOSCOW_CITY_ID')
 
+    print_table_of_avg_salaries_hh(fetch_langs_info_hh(hh_moscow_id, 30))
     print_table_of_avg_salaries_sj(
         fetch_langs_info_sj(superjob_api_key, sj_moscow_id)
     )
