@@ -10,7 +10,7 @@ def fetch_vacancies_page_hh(language, page, area_id, period):
     """Returns certain page with vacancies"""
 
     base_api_url = "https://api.hh.ru/"
-    hh_vacancies_url = base_api_url + "vacancies/"
+    hh_vacancies_url = f"{base_api_url}vacancies/"
 
     params = {
             "text": f"Программист {language}",
@@ -63,7 +63,7 @@ def get_processed_and_average_salaries(salaries):
     return len(salaries), sum(salaries) // len(salaries)
 
 
-def get_data_from_vacancies_hh(vacancies_pages):
+def get_avg_salary_from_vacancies_hh(vacancies_pages):
     """Returns processed vacancies and average salary"""
 
     salaries = []
@@ -121,7 +121,7 @@ def fetch_langs_avg_salaries_hh(area_id, period, languages):
         vacancies = fetch_vacancies_by_language(language, area_id, period)
 
         vacancies_processed, average_salary = \
-            get_data_from_vacancies_hh(vacancies)
+            get_avg_salary_from_vacancies_hh(vacancies)
 
         languages_summary[language] = {
             "vacancies_found": vacancies[0]['found'],
@@ -199,7 +199,7 @@ def fetch_vacancies_by_language_sj(api_key, language, area_id=4):
     return vacancies_by_lang
 
 
-def get_data_from_vacancies_sj(vacancies_pages):
+def get_avg_salary_from_vacancies_sj(vacancies_pages):
     """Returns processed vacancies from superjob.ru and average salary"""
 
     salaries = []
@@ -234,7 +234,7 @@ def fetch_langs_avg_salary_sj(api_key, area_id, languages):
         vacancies = \
             fetch_vacancies_by_language_sj(api_key, language, area_id)
         vacancies_processed, average_salary = \
-            get_data_from_vacancies_sj(vacancies)
+            get_avg_salary_from_vacancies_sj(vacancies)
 
         languages_summary[language] = {
             "vacancies_found": vacancies[0]["total"],
@@ -245,7 +245,9 @@ def fetch_langs_avg_salary_sj(api_key, area_id, languages):
     return languages_summary
 
 
-def print_ascii_table(title, languages_summary):
+def print_table_of_avg_salaries_hh(languages_summary):
+    title = 'HeadHunter Moscow'
+
     data = [[
         "Язык программирования",
         "Вакансий найдено",
@@ -266,14 +268,26 @@ def print_ascii_table(title, languages_summary):
     print(table.table)
 
 
-def print_table_of_avg_salaries_hh(languages_data):
-    title = 'HeadHunter Moscow'
-    print_ascii_table(title, languages_data)
-
-
-def print_table_of_avg_salaries_sj(languages_data):
+def print_table_of_avg_salaries_sj(languages_summary):
     title = 'SuperJob Moscow'
-    print_ascii_table(title, languages_data)
+    data = [[
+        "Язык программирования",
+        "Вакансий найдено",
+        "Вакансий обработано",
+        "Средняя зарплата"
+    ]]
+
+    for language, info in languages_summary.items():
+        data.append(
+            [
+                language,
+                info['vacancies_found'],
+                info['vacancies_processed'],
+                info['average_salary']
+            ]
+        )
+    table = AsciiTable(data, title)
+    print(table.table)
 
 
 def main():
