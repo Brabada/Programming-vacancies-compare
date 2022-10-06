@@ -102,7 +102,7 @@ def predict_rub_salary_hh(vacancy_salary):
     return predict_salary(from_, to_)
 
 
-def fetch_langs_data_hh(area_id, period, languages):
+def fetch_langs_avg_salaries_hh(area_id, period, languages):
     """
     Gets area_id, period and languages for searching and return langs data
     In:
@@ -117,7 +117,7 @@ def fetch_langs_data_hh(area_id, period, languages):
         average_salary
     """
 
-    languages_data = {}
+    languages_summary = {}
     # For every language gets count of finded vacancies, processed vacancies
     # and average salary
     for language in languages:
@@ -126,13 +126,13 @@ def fetch_langs_data_hh(area_id, period, languages):
         vacancies_processed, average_salary = \
             get_data_from_vacancies_hh(vacancies)
 
-        languages_data[language] = {
+        languages_summary[language] = {
             "vacancies_found": vacancies[0]['found'],
             "vacancies_processed": vacancies_processed,
             "average_salary": average_salary
         }
 
-    return languages_data
+    return languages_summary
 
 
 def predict_rub_salary_from_sj(vacancy):
@@ -215,7 +215,7 @@ def get_data_from_vacancies_sj(vacancies_pages):
     return get_processed_and_average_salaries(salaries)
 
 
-def fetch_langs_data_sj(api_key, area_id, languages):
+def fetch_langs_avg_salary_sj(api_key, area_id, languages):
     """
     Gets api, area_id and languages for searching and return langs data
     In:
@@ -230,8 +230,8 @@ def fetch_langs_data_sj(api_key, area_id, languages):
         average_salary
     """
 
-    languages_data = {}
-    # For every language gets count of finded vacancies, processed vacancies
+    languages_summary = {}
+    # For every language gets count of found vacancies, processed vacancies
     # and average salary
     for language in languages:
         vacancies = \
@@ -239,16 +239,16 @@ def fetch_langs_data_sj(api_key, area_id, languages):
         vacancies_processed, average_salary = \
             get_data_from_vacancies_sj(vacancies)
 
-        languages_data[language] = {
+        languages_summary[language] = {
             "vacancies_found": vacancies[0]["total"],
             "vacancies_processed": vacancies_processed,
             "average_salary": average_salary
         }
 
-    return languages_data
+    return languages_summary
 
 
-def print_ascii_table(title, languages_data):
+def print_ascii_table(title, languages_summary):
     data = [[
         "Язык программирования",
         "Вакансий найдено",
@@ -256,7 +256,7 @@ def print_ascii_table(title, languages_data):
         "Средняя зарплата"
     ]]
 
-    for language, info in languages_data.items():
+    for language, info in languages_summary.items():
         data.append(
             [
                 language,
@@ -302,10 +302,10 @@ def main():
     ]
 
     print_table_of_avg_salaries_hh(
-        fetch_langs_data_hh(hh_moscow_id, 30, languages)
+        fetch_langs_avg_salaries_hh(hh_moscow_id, 30, languages)
     )
     print_table_of_avg_salaries_sj(
-        fetch_langs_data_sj(superjob_api_key, sj_moscow_id, languages)
+        fetch_langs_avg_salary_sj(superjob_api_key, sj_moscow_id, languages)
     )
 
 
