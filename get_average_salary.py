@@ -281,7 +281,7 @@ def print_table_of_avg_salaries_sj(languages_data):
 
 def main():
     load_dotenv()
-    hh_moscow_id = os.getenv('MOSCOW_CITY_ID')
+    hh_moscow_id = os.getenv('HH_MOSCOW_CITY_ID')
     superjob_api_key = os.getenv('SUPERJOB_API_KEY')
     sj_moscow_id = os.getenv('SJ_MOSCOW_CITY_ID')
 
