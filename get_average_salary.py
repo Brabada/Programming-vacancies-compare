@@ -36,21 +36,18 @@ def fetch_vacancies_by_language(language, area_id=113, period=None):
     Out:
     Dict with vacancies data
     """
-    vacancies = {}
-    try:
-        vacancies = fetch_vacancies_page_hh(language, 0, area_id, period)
-    except requests.exceptions.HTTPError:
-        logging.warning("Can't fetch page with vacancies from hh.ru")
 
-    page = 0
-    pages = vacancies['pages']
     vacancies = []
-    while page < pages:
+    page = 0
+    while True:
         try:
             vacancies.append(fetch_vacancies_page_hh(language, page, area_id,
                                                      period))
         except requests.exceptions.HTTPError:
             logging.warning("Can't fetch page with vacancies from hh.ru")
+        pages = vacancies[page]['pages']
+        if page == pages - 1:
+            break
         page += 1
 
     return vacancies

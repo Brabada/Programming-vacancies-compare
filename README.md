@@ -47,7 +47,7 @@ $ cd "path_where_is_script"
 $ python get_average_salary.py
 ```
 
-It can take about 2 minutes.
+It can take about ~1 minute.
 
 Output must be:
 ```shell
