@@ -18,6 +18,8 @@ def fetch_vacancies_page_hh(language, page, area_id, period):
             "page": page,
             "per_page": 100,    # Number of vacancy per page
             "period": period,
+            "only_with_salary": "true",
+            "currency": "RUR",
         }
 
     response = requests.get(hh_vacancies_url, params=params)
